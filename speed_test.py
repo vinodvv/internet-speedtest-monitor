@@ -1,5 +1,6 @@
 import speedtest
 from datetime import datetime
+import pandas as pd
 import csv
 import os
 
@@ -48,12 +49,22 @@ def save_results(filename, results):
         writer.writerow(results)
 
 
+def load_last_result(filename):
+    if os.path.isfile(filename):
+        df = pd.read_csv(filename)
+        if not df.empty:
+            last = df.iloc[-1]
+            return last
+    return None
+
+
 def main():
     """
     Main function to run the internet speed test and save the results
     """
     results = get_speedtest_results()
     save_results(FILENAME, results)
+    # load_last_result(FILENAME)
     print(f"Internet speed test completed successfully! Results saved to '{FILENAME}'.")
 
 
