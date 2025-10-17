@@ -39,6 +39,42 @@ if st.button("Run Speed Test"):
     speed_test.save_results(FILENAME, results)
     speed_test.load_last_result(filename=FILENAME)
 
+# Performance statistics
+df = pd.read_csv(FILENAME)
+
+st.subheader("Performance statistics")
+df["download"] = pd.to_numeric(df["download"])
+df["upload"] = pd.to_numeric(df["upload"])
+df["ping"] = pd.to_numeric(df["ping"])
+
+# Statistics
+best = [df["download"].max(), df["upload"].max(), df["ping"].min()]
+worst = [df["download"].min(), df["upload"].min(), df["ping"].max()]
+mean = [df["download"].mean(), df["upload"].mean(), df["ping"].mean(), ]
+std_dev = [df["download"].std(), df["upload"].std(), df["ping"].std()]
+
+
+c1, c2, c3 = st.columns(3)
+
+c1.write("⬇️ Download")
+c2.write("⬆️️ Upload")
+c3.write("📶 Ping")
+c1.metric("Best", f"{best[0]} Mbps")
+c2.metric("Best", f"{best[1]} Mbps")
+c3.metric("Best", f"{best[-1]} ms")
+
+c1.metric("Worst", f"{worst[0]} Mbps")
+c2.metric("Worst", f"{worst[1]} Mbps")
+c3.metric("Worst", f"{worst[-1]} ms")
+
+c1.metric("Average", f"{mean[0]:.2f} Mbps")
+c2.metric("Average", f"{mean[1]:.2f} Mbps")
+c3.metric("Average", f"{mean[-1]:.2f} ms")
+
+c1.metric("Std Dev", f"{std_dev[0]:.2f} Mbps")
+c2.metric("Std Dev", f"{std_dev[1]:.2f} Mbps")
+c3.metric("Std Dev", f"{std_dev[-1]:.2f} ms")
+
 
 # Show speed test history
 if os.path.isfile(FILENAME):
